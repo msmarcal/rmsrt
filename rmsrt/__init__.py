@@ -3,15 +3,14 @@ from pathlib import Path
 
 
 @click.command()
-@click.option('--d', help='Target directiory')
-def cli(d):
+@click.argument('directory', type=click.Path(exists=True))
+def cli(directory):
     '''
     Remove orphan srt subtitle files from a given directory
     '''
-    target_path = Path(d)
+    target_path = Path(directory)
 
-    if not target_path.is_dir():
-        exit(f'ERROR: {d} is not a directory')
+    print(target_path.absolute())
 
 
 if __name__ == '__main__':
