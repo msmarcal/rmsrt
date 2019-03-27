@@ -11,6 +11,7 @@ setup(
     description='Remove orphan srt subtitle files from a given directory ',
     long_description=README,
     long_description_content_type='text/markdown',
+    platforms=['any'],
     author='Marcelo Subtil Marcal',
     author_email='marcelo@smarcal.com',
     url='https://github.com/msmarcal/rmsrt',
