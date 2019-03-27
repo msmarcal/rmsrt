@@ -1,1 +1,2 @@
 Click==7.0
+Send2Trash==1.5.0

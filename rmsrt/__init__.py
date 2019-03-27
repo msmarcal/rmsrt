@@ -1,18 +1,54 @@
-import click
 from pathlib import Path
+
+import click
+from send2trash import send2trash
+
+
+def remove_file(file_name, force=False):
+    '''
+    Moves file_name file to the Trash. If force is true, deletes it.
+    '''
+    if force:
+        Path(file_name).unlink()
+    else:
+        send2trash(file_name)
 
 
 @click.command()
-@click.option('-e', default='srt', help='Subtitle extension. DEFAULT = srt')
 @click.argument('directory', type=click.Path(exists=True))
-def cli(directory, e):
+@click.option('-e', '--extension', default='srt', help='Subtitle extension. DEFAULT = srt.')
+@click.option('-f', '--force', is_flag=True, default=False, help="Force deletion. Don't send files to Trash.")
+@click.option('-s', '--silent', is_flag=True, default=False, help='Do not show any output.')
+def cli(directory, extension, force, silent):
     '''
-    Remove orphan srt subtitle files from a given directory
+    Removes orphan subtitle files from a given DIRECTORY
     '''
 
     target_path = Path(directory)
 
-    print(target_path.absolute(), e)
+    if not target_path.is_dir():
+        if not silent:
+            click.echo(click.style('\nError: ', fg='red', bold=True), nl=False)
+            exit(f'"{target_path.absolute()}" is not a directory.')
+        else:
+            exit(1)
+
+    subtitle_files = list(target_path.glob('*.' + extension))
+
+    if not subtitle_files:
+        if not silent:
+            click.echo(click.style('\nError: ', fg='red', bold=True), nl=False)
+            exit(f'No "{extension}" files were found in "{target_path.absolute()}"')
+        else:
+            exit(1)
+
+    for file in subtitle_files:
+
+        # name without extension
+        print(str(file.name).replace(''.join(file.suffixes[-2:]), ''), end=' ')
+
+        # subtitle extension
+        print(''.join(file.suffixes[-2:]))
 
 
 if __name__ == '__main__':
