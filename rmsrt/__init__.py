@@ -14,6 +14,14 @@ def remove_file(file_name, force=False):
         send2trash(file_name)
 
 
+def error_message(message):
+    '''
+    Shows an error "message" and exits (1)
+    '''
+    click.echo(click.style('\nError: ', fg='red', bold=True), nl=False)
+    exit(f'{message}')
+
+
 @click.command()
 @click.argument('directory', type=click.Path(exists=True))
 @click.option('-e', '--extension', default='srt', help='Subtitle extension. DEFAULT = srt.')
@@ -27,20 +35,20 @@ def cli(directory, extension, force, silent):
     target_path = Path(directory)
 
     if not target_path.is_dir():
-        if not silent:
-            click.echo(click.style('\nError: ', fg='red', bold=True), nl=False)
-            exit(f'"{target_path.absolute()}" is not a directory.')
-        else:
+        if silent:
             exit(1)
+        else:
+            error_message(f'"{target_path.absolute()}" is not a directory.')
 
     subtitle_files = list(target_path.glob('*.' + extension))
 
     if not subtitle_files:
-        if not silent:
-            click.echo(click.style('\nError: ', fg='red', bold=True), nl=False)
-            exit(f'No "{extension}" files were found in "{target_path.absolute()}"')
-        else:
+        if silent:
             exit(1)
+        else:
+            error_message(f'No "{extension}" files were found in "{target_path.absolute()}"')
+
+    # TODO: Create a tuple of subtitles that have no corresponding video files
 
     for file in subtitle_files:
 
@@ -49,6 +57,10 @@ def cli(directory, extension, force, silent):
 
         # subtitle extension
         print(''.join(file.suffixes[-2:]))
+
+    # TODO: Show orphan subtitles and ask for delet confirmation if no --silent
+
+    # TODO: Delete (--force) or trash files
 
 
 if __name__ == '__main__':

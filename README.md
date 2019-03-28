@@ -15,6 +15,7 @@ Remove orphan srt subtitle files from a given directory
 	  Removes orphan subtitle files from a given DIRECTORY
 
 	Options:
-	  -e, --extension TEXT  Subtitle extension. DEFAULT = srt
-	  -s, --silent          Do not show output
+	  -e, --extension TEXT  Subtitle extension. DEFAULT = srt.
+	  -f, --force           Force deletion. Don't send files to Trash.
+	  -s, --silent          Do not show any output.
 	  --help                Show this message and exit.
